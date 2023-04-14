@@ -1,0 +1,58 @@
+#!/bin/bash
+echo "revisamos 1"
+if [[ ! $1 =~ ^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$ ]]; then
+        echo "La ip no es válida"
+        echo
+        echo "Utilice ./configurarnet.sh <ip> <hostname>"
+        echo
+        echo "Por ejemplo"
+        echo
+        echo "./configurarnet.sh 201.212.100.23 'svp-00234'"
+        exit 1
+fi
+
+echo "revisamos 2"
+if [[ ! $2 =~ ^svp\-[0-9]{5}$ ]]; then
+        echo "El nombre del svp no es valido"
+        echo
+        echo "Utilice ./configurarnet.sh <ip> <hostname>"
+        echo
+        echo "Por ejemplo"
+        echo
+        echo "./configurarnet.sh 201.212.100.23 'svp-00234'"
+        exit 1
+fi
+
+MASK=255.255.255.0
+OCT1=`echo $1 | cut -d\. -f1`
+OCT2=`echo $1 | cut -d\. -f2`
+OCT3=`echo $1 | cut -d\. -f3`
+
+GATEWAY="$OCT1.$OCT2.$OCT3.1"
+
+echo "Configuramos interface"
+#sudo bash -c "cat > /etc/network/interfaces << EOL
+bash -c "cat > /etc/network/interfaces << EOL
+source /etc/network/interfaces.d/*
+
+auto lo
+iface lo inet loopback
+
+auto ens192
+iface ens192 inet static
+address $1
+netmask $MASK
+gateway $GATEWAY
+
+EOL"
+
+echo "Configuramos dns"
+#sudo bash -c "cat > /etc/resolv.conf << EOL
+bash -c "cat > /etc/resolv.conf << EOL
+nameserver 200.32.10.115
+nameserver 200.32.10.123
+EOL"
+
+echo "aca llegamos"
+#sudo /etc/init.d/networking restart
+/etc/init.d/networking restart
