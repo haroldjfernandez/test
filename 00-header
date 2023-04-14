@@ -1,0 +1,65 @@
+#!/bin/sh
+#
+#    00-header - create the header of the MOTD
+#    Copyright (C) 2009-2010 Canonical Ltd.
+#
+#    Authors: Dustin Kirkland <kirkland@canonical.com>
+#
+#    This program is free software; you can redistribute it and/or modify
+#    it under the terms of the GNU General Public License as published by
+#    the Free Software Foundation; either version 2 of the License, or
+#    (at your option) any later version.
+#
+#    This program is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU General Public License for more details.
+#
+#    You should have received a copy of the GNU General Public License along
+#    with this program; if not, write to the Free Software Foundation, Inc.,
+#    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+
+[ -r /etc/lsb-release ] && . /etc/lsb-release
+
+if [ -z "$DISTRIB_DESCRIPTION" ] && [ -x /usr/bin/lsb_release ]; then
+	# Fall back to using the very slow lsb_release utility
+	DISTRIB_DESCRIPTION=$(lsb_release -s -d)
+fi
+
+RED='\033[0;31m'
+NC='\033[0m'
+BLUE='\033[0;34m'
+GREEN='\033[0;32m'
+
+printf "Welcome to %s (%s %s %s)\n" "$DISTRIB_DESCRIPTION" "$(uname -o)" "$(uname -r)" "$(uname -m)"
+
+if [ `ip addr show | grep ether -A1 | grep inet | wc -l` -ne 1 ]; then
+printf "
+${RED}
+****************************
+		BIENVENIDO!!!!!
+
+Si es la primera vez que ingresa al sistema,
+necesita configurar su placa de red correctamente asi
+como el nombre de su SVP.
+${NC}
+Ejecute el comando:
+   ${GREEN}./configurarnet.sh ${BLUE}<ip> <hostname>
+${NC}
+Donde <ip> es la ip que se muestra en la pantalla
+principal de su producto SVP
+
+Asimismo el <hostname> se encuentra en la misma
+pantalla que la ip y comienza con 'svp-'.
+Recuerde encerrar entre comillas el hostname
+
+Ej:
+   ${GREEN}./configurarnet.sh ${BLUE}200.200.200.200 'svp-0456'
+${RED}
+
+Es importante que configure correctamente su ip y hostname.
+Ante cualquier duda contactarse al 
+****************************
+${NC}
+"
+fi
