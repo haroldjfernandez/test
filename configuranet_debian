@@ -49,6 +49,5 @@ nameserver 200.32.10.115
 nameserver 200.32.10.123
 EOL"
 
-
 sudo /etc/init.d/networking restart
 
