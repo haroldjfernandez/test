@@ -1,5 +1,4 @@
 #!/bin/bash
-echo "revisamos 1"
 if [[ ! $1 =~ ^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$ ]]; then
         echo "La ip no es válida"
         echo
@@ -11,7 +10,6 @@ if [[ ! $1 =~ ^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$ ]]; then
         exit 1
 fi
 
-echo "revisamos 2"
 if [[ ! $2 =~ ^svp\-[0-9]{5}$ ]]; then
         echo "El nombre del svp no es valido"
         echo
@@ -30,9 +28,8 @@ OCT3=`echo $1 | cut -d\. -f3`
 
 GATEWAY="$OCT1.$OCT2.$OCT3.1"
 
-echo "Configuramos interface"
-#sudo bash -c "cat > /etc/network/interfaces << EOL
-bash -c "cat > /etc/network/interfaces << EOL
+
+sudo bash -c "cat > /etc/network/interfaces << EOL
 source /etc/network/interfaces.d/*
 
 auto lo
@@ -46,13 +43,12 @@ gateway $GATEWAY
 
 EOL"
 
-echo "Configuramos dns"
-#sudo bash -c "cat > /etc/resolv.conf << EOL
-bash -c "cat > /etc/resolv.conf << EOL
+
+sudo bash -c "cat > /etc/resolv.conf << EOL
 nameserver 200.32.10.115
 nameserver 200.32.10.123
 EOL"
 
-echo "aca llegamos"
-#sudo /etc/init.d/networking restart
-/etc/init.d/networking restart
+
+sudo /etc/init.d/networking restart
+
